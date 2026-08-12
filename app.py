@@ -81,7 +81,7 @@ def build_classifier(rules_config: list) -> TextClassifier:
     classifier = TextClassifier()
     for r in rules_config:
         keywords = [k.strip() for k in r["keywords"].split(",") if k.strip()] if r["keywords"] else []
-        patterns = [p.strip() for p in r["patterns"].split("|") if p.strip()] if r["patterns"] else []
+        patterns = [p.strip() for p in r["patterns"].splitlines() if p.strip()] if r["patterns"] else []
         if r["name"] and (keywords or patterns):
             classifier.add_rule(name=r["name"], keywords=keywords, patterns=patterns)
     return classifier
