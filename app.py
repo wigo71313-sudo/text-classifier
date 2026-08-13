@@ -191,15 +191,33 @@ with tab3:
                 for i, text in enumerate(pages_text, 1):
                     results[f"第{i}頁"] = text
 
-            st.write(f"共辨識出 **{len(results)}** 份文件")
+                        st.write(f"共辨識出 **{len(results)}** 份文件")
 
-            matched_any = False
+            matched_docs = []
+            rule_counts = {}
             for doc_id, text in results.items():
                 matched = classifier.check(text)
                 if matched:
-                    matched_any = True
+                    matched_docs.append((doc_id, matched))
+                    for rule_name in matched:
+                        rule_counts[rule_name] = rule_counts.get(rule_name, 0) + 1
+
+            if matched_docs:
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.metric("命中文件總數", len(matched_docs))
+                with col2:
+                    st.metric("未命中文件數", len(results) - len(matched_docs))
+
+                st.write("**各規則命中票數:**")
+                for rule_name, count in rule_counts.items():
+                    st.write(f"- {rule_name}: {count} 票")
+
+                st.divider()
+
+                for doc_id, matched in matched_docs:
+                    text = results[doc_id]
                     with st.expander(f"✅ {doc_id} -> {', '.join(matched)}"):
                         st.text_area("文字內容", value=text.strip(), height=150, key=f"pdf_text_{doc_id}")
-
-            if not matched_any:
+            else:
                 st.info("❌ 沒有任何文件命中規則")
