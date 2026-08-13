@@ -191,7 +191,7 @@ with tab3:
                 for i, text in enumerate(pages_text, 1):
                     results[f"第{i}頁"] = text
 
-                        st.write(f"共辨識出 **{len(results)}** 份文件")
+                                  st.write(f"共辨識出 **{len(results)}** 份文件")
 
             matched_docs = []
             rule_counts = {}
